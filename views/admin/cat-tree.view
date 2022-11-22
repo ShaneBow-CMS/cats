@@ -1,0 +1,149 @@
+<style>
+li.on {background-color: yellow}
+li:hover {cursor:pointer}
+i.lft,i.rgt {color:red}
+
+~~tables/express/tbl-hor-min-a.css
+table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
+.btns {text-align:right}
+</style>
+
+<div class="row">
+
+ <div class="col-sm-6">
+  <div class="panel panel-default">
+   <ul class="nav nav-tabs">
+    <li class="active"><a href="#tree" data-toggle="tab">Tree</a></li>
+    <li><a href="#list" data-toggle="tab">List</a></li>
+   </ul>
+   <div class="tab-content">
+    <div id="tree" class="tab-pane fade in active">
+     ~~cms/cats/views/build-tree.php.div
+    </div>
+
+    <div id="list" class="tab-pane fade">
+     <table id="xnodes-list" class="tbl-hor-min-a">
+      <thead>
+       <tr><th>id</th><th>lft</th><th>rgt</th><th>title</th><!-- th>tip</th --></tr>
+      </thead>
+      <tbody>
+       <?php foreach($nodes as $node): ?>
+        <tr>
+         <td><?= $node['id'] ?></td>
+         <td><?= $node['lft'] ?></td>
+         <td><?= $node['rgt'] ?></td>
+         <td><?= $node['title'] ?></td>
+         <!-- td><?= $node['tip'] ?></td -->
+        </tr>
+       <?php endforeach; ?>
+      </tbody>
+     </table>
+    </div>
+   </div>
+  </div>
+
+ </div>
+
+ <div class="col-sm-6">
+  <form class="panel panel-default active-node">
+   <div class="panel-heading">
+    Active Node</div>
+   <div class="panel-body">
+    <div class="form-group">
+     <label>id</label>
+     <input name="id" class="form-control disabled" />
+    </div>
+    <div class="form-group">
+     <label>Title</label>
+     <input name="title" class="form-control" />
+    </div>
+    <div class="form-group">
+     <label>Slug</label>
+     <input name="slug" class="form-control" placeholder="Unique url slug">
+    </div>
+    <div class="form-group">
+     <label>Layout</label>
+     <input name="layout" class="form-control" />
+    </div>
+    <div class="form-group">
+     <label>Lead</label>
+     <input name="lead" class="form-control" />
+    </div>
+    <div class="form-group">
+     <label>Icon</label>
+     <input name="icon" class="form-control" />
+    </div>
+    <div class="form-group">
+     <label>Content</label>
+     <textarea name="content" class="form-control" value="" rows="3"
+      placeholder="Description for this category"></textarea>
+    </div>
+
+    <div class="form-group hidden btns">
+     <button class="btn preview btn-primary btn-outline" alt="Preview"><i class="icon-eye4"></i></button>
+     <a href="#dlg-cat-create" role="button" data-toggle="modal" class="btn btn-primary btn-outline">
+      Add Child</a>
+     <button type="submit" class="btn btn-primary btn-outline">
+      <?= $this->lang->line('shop_Submit'); ?></button>
+    </div>
+
+   </div>
+  </form>
+
+ </div>
+</div>
+
+~~cms/cats/views/admin/dlg-cat-create.div
+<script>
+$(function(){
+
+	var $tree = $('#tree'),
+		$active = $('form.active-node'),
+		$dlg  = $('#dlg-cat-create');
+
+	$tree.on('click', 'li', function(e) {
+		var $my = $(this),
+			id = $my.attr('node-id'),
+			icon = $my.find('i').eq(0).attr('class');
+			ins = Number($my.attr('rgt'));
+		e.stopPropagation();
+
+		$active.find('.btns').addClass('hidden');
+		$tree.find('li.on').removeClass('on');
+		$my.addClass('on');
+		$active.find('[name=id]').val(id);
+		$active.find('[name=title]').val($my.find('b').eq(0).text());
+		$active.find('[name=lead]').val($my.attr('title'));
+		$active.find('[name=icon]').val(icon.substring(5));
+		UBOW.ajax('/cat/fetch/'+id, {}, function(err,dat,msg) {
+			if (err) return UBOW.flashError(msg);
+			$active.find('[name=content]').val(dat.content);
+			$active.find('[name=layout]').val(dat.layout);
+			$active.find('[name=slug]').val(dat.slug);
+			$active.find('.btns').removeClass('hidden');
+			});
+
+		// populate child dialog
+		$dlg.find('[name=parent_id]').val(id);
+		$dlg.find('.modal-title').html('<i class="' + icon + '"></i> Create Child Category');
+		});
+
+	$('form').submit(function(e) {
+		e.preventDefault();
+		NBOW.ajaxForm($(this),'/cat/post', {}, function() {
+			UBOW.flashSuccess("OK reloading...");
+			location.replace(location.pathname);
+			});
+		});
+
+	$('button.preview').on('click', function(e){
+		e.preventDefault();
+		var slug = $('[name=slug]').val(),
+			title = $('[name=title]').val();
+		if (!slug) return UBOW.flashError('Slug is blank!');
+		var myWindow = window.open('/page/category/'+slug, title,
+			"toolbar=no,scrollbars=yes,resizable=yes,top=100,left=100,width=400,height=500");
+		});
+
+	});
+</script>

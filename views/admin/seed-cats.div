@@ -1,0 +1,15 @@
+ <div class="col-md-4">
+  <div class="panel panel-red">
+   <div class="panel-heading">Create Categories Tables</div>
+   <div class="panel-body">
+    <p>Drops then creates the following tables:</p>
+    <ul>
+     <li>cats &rarr; categories</li>
+    </ul>
+   </div>
+   <form action="/cat/seed" method="post" class="panel-footer">
+    <input name="auth" class="form-control" placeholder="Auth Code">
+    <button type="submit" class="btn btn-outline btn-danger btn-xs">OK</button>
+   </form>
+  </div>
+ </div>

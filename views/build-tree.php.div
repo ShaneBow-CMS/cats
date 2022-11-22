@@ -1,0 +1,41 @@
+<ul>
+<?php
+	function entry($row) {
+		$icon = '<i class="icon-'.$row['icon'].'"></i> ';
+		return $icon.'<i class="lft">'.$row['lft'].'</i> <b>'.$row['title'].'</b> <i class="rgt">'.$row['rgt'].'</i>';
+		}
+	$stack = [];
+
+	// display each row
+	foreach($nodes as $row) {
+		$deb = 'pop:';
+
+		if (count($stack)>0) { // only check stack if there is one
+
+			// check if we should remove a node from the stack
+			while ($stack[count($stack)-1] < $row['lft']) {
+				$deb.=' '.array_pop($stack);
+				echo '</ul></li>'.PHP_EOL;
+				}
+			}
+
+		// display indented node
+		$hasChildren = $row['rgt'] - $row['lft'] > 1;
+		$attrs = 'lft="'.$row['lft'].'" rgt="'.$row['rgt'].'"'
+				.'node-id="'.$row['id'].'"'
+				.' title="'.$row['lead'].'"';
+		$name = entry($row);
+		echo "<li $attrs>".$name;
+		if ($hasChildren) { // if node has kids
+			echo '<ul>'.PHP_EOL;
+			$stack[] = $row['rgt']; // add this node to the stack
+			}
+		else echo '</li>'.PHP_EOL;
+		}
+
+	while (count($stack)) {
+		array_pop($stack);
+		echo '</ul></li>'.PHP_EOL;
+		}
+?>
+</ul>
