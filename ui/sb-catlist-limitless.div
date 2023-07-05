@@ -1,0 +1,19 @@
+<div class="sidebar-category">
+ <div class="category-title">
+  <span>Categories</span>
+  <ul class="icons-list">
+   <li><a href="#" data-action="collapse"></a></li>
+  </ul>
+ </div>
+
+ <div class="category-content no-padding">
+  <ul class="navigation">
+   <?php foreach ($cats as $c): ?>
+    <li><a href="<?= $c['slug'] ?>">
+     <span class="text-muted text-size-small text-regular pull-right"><?= $c['numpages'] ?></span>
+      <i class="icon-<?= $c['icon'] ?>"></i><?= $c['title'] ?></a>
+    </li>
+   <?php endforeach; ?>
+  </ul>
+ </div>
+</div>
