@@ -1,0 +1,122 @@
+#sidebar div.panel.cattree {
+	background:url(/assets/pix/serene/pond-reflect2.jpg), no-repeat;
+	background-size: cover;
+	padding:10px 20px
+	}
+.tree .lft,.tree .rgt {display:none}
+div.cattree h3 {color:#e0f2e1;font-weight:700}
+
+ul.tree { margin: 1em; font-family: sans-serif; list-style:none; }
+ul.tree * { font-size: 1.0em; line-height:1.2; }
+.tree input {
+	position: absolute;
+	clip: rect(0, 0, 0, 0);
+	}
+
+.tree input ~ ul { display: none; }
+.tree input:checked ~ ul { display: block; }
+
+/* Tree rows
+*************/
+#sidebar .tree ul,
+.tree ul {padding:0;list-style:none;margin:0;font-size:inherit} /* */
+.tree li {
+	line-height: 1.2;
+	position: relative;
+	padding: 0 0 1em 1em;
+	}
+
+.tree ul li { padding: 1em 0 0 1em; }
+
+.tree > li:last-child { padding-bottom: 0; }
+
+/* Tree labels
+.tree_label {
+**************/
+.tree a, .tree label {
+	position: relative;
+	display: inline-block;
+	font-size:inherit;  /* */
+	color:#fff;
+	}
+
+label.tree_label { cursor: pointer; }
+
+label.tree_label:hover,
+ul.tree a:hover {color:#A8D1B4 }
+
+/* Tree expanded icon
+**********************/
+label.tree_label:before {
+	background: #777;
+	color: #fff;
+	position: relative;
+	z-index: 1;
+	float: left;
+	margin: 0 1em 0 -2em;
+	width: 1em;
+	height: 1em;
+	border-radius: 1em;
+	content: '+';
+content: "\25B8";
+	text-align: center;
+	line-height: .9em;
+	}
+
+:checked ~ label.tree_label:before {
+	/* content: ''; */
+	transform: rotate(90deg);
+	}
+
+/* Tree branches
+*****************/
+.tree li:before {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: -.5em;
+	display: block;
+	width: 0;
+	border-left: 1px solid #777;
+	content: "";
+	}
+
+.tree_label:after {
+	position: absolute;
+	top: 0;
+	left: -1.5em;
+	display: block;
+	height: 0.5em;
+	width: 1em;
+	border-bottom: 1px solid #777;
+	border-left: 1px solid #777;
+	border-radius: 0 0 0 .3em;
+	content: '';
+	}
+
+label.tree_label:after { border-bottom: 0; }
+
+:checked ~ label.tree_label:after {
+	border-radius: 0 .3em 0 0;
+	border-top: 1px solid #777;
+	border-right: 1px solid #777;
+	border-bottom: 0;
+	border-left: 0;
+	bottom: 0;
+	top: 0.5em;
+	height: auto;
+	}
+
+.tree li:last-child:before {
+	height: 1em;
+	bottom: auto;
+	}
+
+.tree > li:last-child:before { display: none; }
+
+.tree_custom {
+	display: block;
+	background: #eee;
+	padding: 1em;
+	border-radius: 0.3em;
+	}

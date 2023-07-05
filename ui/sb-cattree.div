@@ -1,0 +1,6 @@
+<div class="panel cattree" >
+ <h3>Categories</h3>
+ <ul class="tree">
+  <?= file_get_contents('assets/files/cattree2.div') ?>
+ </ul>
+</div>

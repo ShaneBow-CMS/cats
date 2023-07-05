@@ -1,0 +1,35 @@
+<style>
+~~cms/cats/ui/sb-cattree.css
+ul.tree {
+	margin:0;
+	}
+ul.tree * {
+	font-size: 12px;
+	margin:0;
+	}
+.tree li::before {left:-6px;top:0}
+.tree a, .tree label {color:inherit}
+.tree_label::after {
+	left: -18px;
+	height: 6px;
+	width: 12px;
+	}
+:checked ~ label.tree_label::after {
+	top:6px;
+	width:13px;
+	}
+</style>
+<div class="sidebar-category">
+ <div class="category-title">
+  <span>Categories</span>
+  <ul class="icons-list">
+   <li><a href="#" data-action="collapse"></a></li>
+  </ul>
+ </div>
+
+ <div class="category-content xno-padding">
+  <ul class="xnavigation tree">
+   <?= file_get_contents('assets/files/cattree2.div') ?>
+  </ul>
+ </div>
+</div>
