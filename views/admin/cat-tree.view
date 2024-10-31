@@ -18,7 +18,8 @@ table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
    </ul>
    <div class="tab-content">
     <div id="tree" class="tab-pane fade in active">
-     ~~cms/cats/views/build-tree.php.div
+     -~~cms/cats/views/build-tree.php.div
+     <?= $tree ?>
     </div>
 
     <div id="list" class="tab-pane fade">
@@ -44,6 +45,13 @@ table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
  </div>
 
  <div class="col-sm-6">
+ ~~cms/cats/ui/sb-cattree.div
+
+<div>
+<b>File: <?= $nav_file_name ?></b><br>
+<?= $nav_tree ?>
+</div>
+
   <form class="panel panel-default active-node">
    <div class="panel-heading">
     Active Node</div>

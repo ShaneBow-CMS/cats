@@ -85,7 +85,7 @@ class Mcats extends MY_Model {
 		return $this->db->select('cats.*,COUNT(pages.cid) as numpages')
 			->join('pages', 'pages.cid = cats.id','left outer')
 			->group_by('cats.id')
-			->order_by('lft')
+	//		->order_by('cats.lft')
 			->get_where('cats', $where)
 			->result_array();
 		}
@@ -119,7 +119,7 @@ class Mcats extends MY_Model {
 		return $this->db->update('cats', $info);
 		}
 
-	/*
+	/**
 	* format one category title/icon
 	* for the _cattree function below
 	*********************************/
@@ -179,6 +179,55 @@ $attrs = '';
 			fwrite($file, '</ul></li>'.PHP_EOL);
 			}
 
+		fclose($file);
+		}
+
+	function build_editor_tree($nodes) {
+		$htm = '<ul>';
+		$write = function($str) use(&$htm) {
+			$htm .= $str;
+			};
+		$get_attrs = function($row) {
+			return 'lft="'.$row['lft'].'" rgt="'.$row['rgt'].'"'
+				.' node-id="'.$row['id'].'"'
+				.' title="'.$row['lead'].'"';
+			};
+		$format = function($row, $has_children) {
+			$icon = '<i class="icon-'.$row['icon'].'"></i> ';
+			return $icon.'<i class="lft">'.$row['lft'].'</i> <b>'.$row['title'].'</b> <i class="rgt">'.$row['rgt'].'</i>';
+			};
+		$this->tree->build($nodes, $format, $get_attrs, $write);
+		return $htm.'</ul>';
+		}
+
+	function fwrite_nav_tree($nodes = null, $file_name = 'cattree2.div') {
+		if (!$nodes) {
+			$nodes = $this->get_cat_tree(); // with root
+			}
+		unset($nodes[0]); // remove root node
+
+		$fileSpec = realpath(APPPATH.'../public_html/assets/files/').'/'. $file_name;
+		$data['filespec'] = $fileSpec;
+		$file = fopen($fileSpec, 'w');
+		$write = function($str) use($file) {
+			fwrite($file, $str);
+			};
+
+		$get_attrs = function($row) { return ''; };
+
+		$format = function($row, $has_children) {
+			$slug = $row['slug'];
+			$name = $this->_entry($row);
+			$html = '';
+			if ($has_children) { // if node has kids
+				$html .= PHP_EOL.' <input type="checkbox" id="'.$slug.'" />';
+			//	$html .= PHP_EOL.' <label for="'.$slug.'" class="tree_label">'.$name.'</label>';
+				$html .= PHP_EOL.' <label for="'.$slug.'" class="tree_label"><a href="'.$this->_url($slug).'">'.$name.'</a></label>';
+				}
+			else $html.= '<a href="'.$this->_url($slug).'" class="tree_label">'.$name.'</a>';
+			return $html;
+			};
+		$this->tree->build($nodes, $format, $get_attrs, $write);
 		fclose($file);
 		}
 
