@@ -33,7 +33,6 @@ table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
          <td><?= $node['lft'] ?></td>
          <td><?= $node['rgt'] ?></td>
          <td><?= $node['title'] ?></td>
-         <!-- td><?= $node['tip'] ?></td -->
         </tr>
        <?php endforeach; ?>
       </tbody>
