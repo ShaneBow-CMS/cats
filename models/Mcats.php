@@ -132,54 +132,15 @@ class Mcats extends MY_Model {
 		}
 
 	/*
+	* @deprecated write_cattree_div
 	* create /public_html/assets/files/cattree.div
 	* which contains categories as nested <ul>
 	* It is loaded into site pages as a 'view fragment'
 	* Avoids need to access/build 'all cats' for each page
 	*********************************/
 	function write_cattree_div() {
-		$fname = realpath(APPPATH.'../public_html/assets/files/').'/cattree2.div';
-		$file = fopen($fname, 'w');
-
 		$nodes = $this->get_cat_tree(); // with root
-		unset($nodes[0]); // remove root node
-		$stack = [];
-
-		// display each row
-		foreach($nodes as $row) {
-
-			// check if we should remove nodes from the stack
-			while (count($stack) && $stack[count($stack)-1] < $row['lft']) {
-				array_pop($stack);
-				fwrite($file, '</ul></li>'.PHP_EOL);
-				}
-
-			// display indented node
-			$row['hasChildren'] = $row['rgt'] - $row['lft'] > 1;
-			$attrs = 'lft="'.$row['lft'].'" rgt="'.$row['rgt'].'"'
-					.' node-id="'.$row['id'].'"'
-					.' title="'.$row['lead'].'"';
-$attrs = '';
-			$slug = $row['slug'];
-			$name = $this->_entry($row);
-			$html = "<li $attrs>";
-			if ($row['hasChildren']) { // if node has kids
-				$html .= PHP_EOL.' <input type="checkbox" id="'.$slug.'" />';
-//				$html .= PHP_EOL.' <label for="'.$slug.'" class="tree_label">'.$name.'</label>';
-				$html .= PHP_EOL.' <label for="'.$slug.'" class="tree_label"><a href="'.$this->_url($slug).'">'.$name.'</a></label>';
-				$html .= PHP_EOL.' <ul>';
-				$stack[] = $row['rgt']; // add this node to the stack
-				}
-			else $html.= '<a href="'.$this->_url($slug).'" class="tree_label">'.$name.'</a></li>';
-			fwrite($file, $html.PHP_EOL);
-			}
-
-		while (count($stack)) {
-			array_pop($stack);
-			fwrite($file, '</ul></li>'.PHP_EOL);
-			}
-
-		fclose($file);
+		$this->fwrite_nav_tree($nodes, 'cattree2.div')
 		}
 
 	function build_editor_tree($nodes) {
