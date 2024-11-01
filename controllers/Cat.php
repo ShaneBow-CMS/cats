@@ -24,22 +24,15 @@ class Cat extends MY_Controller {
 		}
 
 	public function index() {
-$this->load->library('Tree');
 		$this->lang->load('shop', $this->session->userdata('lang'));
 		$data['title'] = 'Content Categories';
-$nodes = $this->mcats->get_cat_tree();
+		$nodes = $this->mcats->get_cat_tree();
 		$data['nodes'] = $nodes;
 		$data['cats'] = $data['nodes'];
-		$data['tree'] = $this->mcats->build_editor_tree($nodes);
 
-		// Write Nav tree
-		$nav_file_name = 'testtree3.div';
-		$data['nav_tree'] = $this->mcats->fwrite_nav_tree($nodes, $nav_file_name);
-
-		// Read Nav tree
-		$fileSpec = realpath(APPPATH.'../public_html/assets/files/').'/'.$nav_file_name;
-		$data['nav_file_name'] = $nav_file_name;
-		$data['nav_tree'] = $this->tree->read($fileSpec);
+		// Write Nav tree - for future reference
+	//	$nav_file_name = 'testtree3.div';
+	//	$data['nav_tree'] = $this->mcats->fwrite_nav_tree($nodes, $nav_file_name);
 
 		$this->load->view('admin/cat-tree', $data);
 		}

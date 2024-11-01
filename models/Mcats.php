@@ -183,6 +183,7 @@ $attrs = '';
 		}
 
 	function build_editor_tree($nodes) {
+		$this->load->library('Tree');
 		$htm = '<ul>';
 		$write = function($str) use(&$htm) {
 			$htm .= $str;
@@ -221,7 +222,6 @@ $attrs = '';
 			$html = '';
 			if ($has_children) { // if node has kids
 				$html .= PHP_EOL.' <input type="checkbox" id="'.$slug.'" />';
-			//	$html .= PHP_EOL.' <label for="'.$slug.'" class="tree_label">'.$name.'</label>';
 				$html .= PHP_EOL.' <label for="'.$slug.'" class="tree_label"><a href="'.$this->_url($slug).'">'.$name.'</a></label>';
 				}
 			else $html.= '<a href="'.$this->_url($slug).'" class="tree_label">'.$name.'</a>';

@@ -11,15 +11,14 @@ table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
 <div class="row">
 
  <div class="col-sm-6">
+
   <div class="panel panel-default">
    <ul class="nav nav-tabs">
-    <li class="active"><a href="#tree" data-toggle="tab">Tree</a></li>
+    <li class="active"><a href="#tree-editor" data-toggle="tab">Tree</a></li>
     <li><a href="#list" data-toggle="tab">List</a></li>
    </ul>
    <div class="tab-content">
-    <div id="tree" class="tab-pane fade in active">
-     -~~cms/cats/views/build-tree.php.div
-     <?= $tree ?>
+    <div id="tree-editor" class="tab-pane fade in active">
     </div>
 
     <div id="list" class="tab-pane fade">
@@ -45,16 +44,8 @@ table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
  </div>
 
  <div class="col-sm-6">
- ~~cms/cats/ui/sb-cattree.div
-
-<div>
-<b>File: <?= $nav_file_name ?></b><br>
-<?= $nav_tree ?>
-</div>
-
   <form class="panel panel-default active-node">
-   <div class="panel-heading">
-    Active Node</div>
+   <div class="panel-heading">Active Node</div>
    <div class="panel-body">
     <div class="form-group">
      <label>id</label>
@@ -103,41 +94,35 @@ table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
 ~~cms/cats/views/admin/dlg-cat-create.div
 <script>
 $(function(){
+	const ed = new NSMTreeEditor('#tree-editor', {
+		format: (n) => `<i class="icon-${n.icon}"></i>
+			<i class="lft">${n.lft}</i> <b>${n.title}</b> <i class="rgt">${n.rgt}</i>`,
+		onSelect: (n) => {
+			$active.find('[name=id]').val(n.id);
+			$active.find('[name=title]').val(n.title);
+			$active.find('[name=lead]').val(n.lead);
+			$active.find('[name=slug]').val(n.slug);
+			$active.find('[name=icon]').val(n.icon);
+			UBOW.ajax('/cat/fetch/'+n.id, {}, function(err,dat,msg) {
+				if (err) return UBOW.flashError(msg);
+				$active.find('[name=content]').val(dat.content);
+				$active.find('[name=layout]').val(dat.layout);
+				$active.find('.btns').removeClass('hidden');
+				});
 
-	var $tree = $('#tree'),
-		$active = $('form.active-node'),
-		$dlg  = $('#dlg-cat-create');
-
-	$tree.on('click', 'li', function(e) {
-		var $my = $(this),
-			id = $my.attr('node-id'),
-			icon = $my.find('i').eq(0).attr('class');
-			ins = Number($my.attr('rgt'));
-		e.stopPropagation();
-
-		$active.find('.btns').addClass('hidden');
-		$tree.find('li.on').removeClass('on');
-		$my.addClass('on');
-		$active.find('[name=id]').val(id);
-		$active.find('[name=title]').val($my.find('b').eq(0).text());
-		$active.find('[name=lead]').val($my.attr('title'));
-		$active.find('[name=icon]').val(icon.substring(5));
-		UBOW.ajax('/cat/fetch/'+id, {}, function(err,dat,msg) {
-			if (err) return UBOW.flashError(msg);
-			$active.find('[name=content]').val(dat.content);
-			$active.find('[name=layout]').val(dat.layout);
-			$active.find('[name=slug]').val(dat.slug);
-			$active.find('.btns').removeClass('hidden');
-			});
-
-		// populate child dialog
-		$dlg.find('[name=parent_id]').val(id);
-		$dlg.find('.modal-title').html('<i class="' + icon + '"></i> Create Child Category');
+			// populate child dialog
+			$dlg.find('[name=parent_id]').val(n.id);
+			$dlg.find('.modal-title').html(`<i class="icon-${n.icon}"></i> Create Child Category`);
+			},
 		});
+	ed.populate(<?= json_encode($nodes) ?>);
+
+	const $active = $('form.active-node');
+	const $dlg = $('#dlg-cat-create');
 
 	$('form').submit(function(e) {
 		e.preventDefault();
-		NBOW.ajaxForm($(this),'/cat/post', {}, function() {
+		UBOW.ajaxForm($(this),'/cat/post', {}, function() {
 			UBOW.flashSuccess("OK reloading...");
 			location.replace(location.pathname);
 			});
