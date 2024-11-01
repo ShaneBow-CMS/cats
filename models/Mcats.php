@@ -140,7 +140,7 @@ class Mcats extends MY_Model {
 	*********************************/
 	function write_cattree_div() {
 		$nodes = $this->get_cat_tree(); // with root
-		$this->fwrite_nav_tree($nodes, 'cattree2.div')
+		$this->fwrite_nav_tree($nodes, 'cattree2.div');
 		}
 
 	function build_editor_tree($nodes) {
