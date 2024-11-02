@@ -44,70 +44,50 @@ table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
  </div>
 
  <div class="col-sm-6">
-  <form class="panel panel-default active-node">
+  <div class="panel panel-default">
    <div class="panel-heading">Active Node</div>
-   <div class="panel-body">
-    <div class="form-group">
-     <label>id</label>
-     <input name="id" class="form-control disabled" />
-    </div>
-    <div class="form-group">
-     <label>Title</label>
-     <input name="title" class="form-control" />
-    </div>
-    <div class="form-group">
-     <label>Slug</label>
-     <input name="slug" class="form-control" placeholder="Unique url slug">
-    </div>
-    <div class="form-group">
-     <label>Layout</label>
-     <input name="layout" class="form-control" />
-    </div>
-    <div class="form-group">
-     <label>Lead</label>
-     <input name="lead" class="form-control" />
-    </div>
-    <div class="form-group">
-     <label>Icon</label>
-     <input name="icon" class="form-control" />
-    </div>
-    <div class="form-group">
-     <label>Content</label>
-     <textarea name="content" class="form-control" value="" rows="3"
-      placeholder="Description for this category"></textarea>
-    </div>
+   <form class="panel-body active-node">
+   </form>
+  </div>
+ </div>
+</div>
 
+~~cms/cats/views/admin/dlg-cat-create.div
+<script>
+$(() => {
+	const $active = $('form.active-node');
+	const $dlg = $('#dlg-cat-create');
+
+	const formActive = new UBOW.Form('form.active-node', {
+		fields: [
+				['id', 'input'],
+				['title', 'input'],
+				['slug', 'input'],
+				['layout', 'input'],
+				['lead', 'input'],
+				['icon', 'input'],
+				['content', 'textarea'],
+			],
+		});
+	const $hiddenBtns = $(`
     <div class="form-group hidden btns">
      <button class="btn preview btn-primary btn-outline" alt="Preview"><i class="icon-eye4"></i></button>
      <a href="#dlg-cat-create" role="button" data-toggle="modal" class="btn btn-primary btn-outline">
       Add Child</a>
      <button type="submit" class="btn btn-primary btn-outline">
       <?= $this->lang->line('shop_Submit'); ?></button>
-    </div>
+    </div>`).appendTo(formActive.$frm);
 
-   </div>
-  </form>
-
- </div>
-</div>
-
-~~cms/cats/views/admin/dlg-cat-create.div
-<script>
-$(function(){
 	const ed = new NSMTreeEditor('#tree-editor', {
 		format: (n) => `<i class="icon-${n.icon}"></i>
 			<i class="lft">${n.lft}</i> <b>${n.title}</b> <i class="rgt">${n.rgt}</i>`,
 		onSelect: (n) => {
-			$active.find('[name=id]').val(n.id);
-			$active.find('[name=title]').val(n.title);
-			$active.find('[name=lead]').val(n.lead);
-			$active.find('[name=slug]').val(n.slug);
-			$active.find('[name=icon]').val(n.icon);
+			formActive.populate(n);
 			UBOW.ajax('/cat/fetch/'+n.id, {}, function(err,dat,msg) {
 				if (err) return UBOW.flashError(msg);
 				$active.find('[name=content]').val(dat.content);
 				$active.find('[name=layout]').val(dat.layout);
-				$active.find('.btns').removeClass('hidden');
+				$hiddenBtns.removeClass('hidden');
 				});
 
 			// populate child dialog
@@ -116,9 +96,6 @@ $(function(){
 			},
 		});
 	ed.populate(<?= json_encode($nodes) ?>);
-
-	const $active = $('form.active-node');
-	const $dlg = $('#dlg-cat-create');
 
 	$('form').submit(function(e) {
 		e.preventDefault();

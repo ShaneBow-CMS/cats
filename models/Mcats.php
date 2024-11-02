@@ -163,6 +163,7 @@ class Mcats extends MY_Model {
 		}
 
 	function fwrite_nav_tree($nodes = null, $file_name = 'cattree2.div') {
+		$this->load->library('Tree');
 		if (!$nodes) {
 			$nodes = $this->get_cat_tree(); // with root
 			}
