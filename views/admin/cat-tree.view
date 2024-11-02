@@ -114,5 +114,9 @@ $(() => {
 			"toolbar=no,scrollbars=yes,resizable=yes,top=100,left=100,width=400,height=500");
 		});
 
+	new UBOW.DBTableBackupRestore('#page-toolbar', {
+		tbl: 'cats',
+		});
+
 	});
 </script>
