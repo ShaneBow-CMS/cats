@@ -24,6 +24,7 @@ class Cat extends MY_Controller {
 		}
 
 	public function index() {
+		$this->require_min_level(MIN_ADMIN_LEVEL);
 		$this->lang->load('shop', $this->session->userdata('lang'));
 		$data['title'] = 'Content Categories';
 		$nodes = $this->mcats->get_cat_tree();
