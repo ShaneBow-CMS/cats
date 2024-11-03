@@ -95,6 +95,15 @@ $(() => {
 			$dlg.find('[name=parent_id]').val(n.id);
 			$dlg.find('.modal-title').html(`<i class="icon-${n.icon}"></i> Create Child Category`);
 			},
+		onSave: (nodes) => {
+			let data = {
+				struct: nodes.map(n => `(${n.id},${n.lft},${n.rgt},"${n.title}")`).join(',')
+				};
+			UBOW.ajax('/cat/save-struct', data, function(err,dat,msg) {
+				if (err) return UBOW.flashError(msg);
+				UBOW.flashSuccess('saved');
+				});
+			},
 		});
 	ed.populate(<?= json_encode($nodes) ?>);
 
@@ -115,17 +124,17 @@ $(() => {
 			"toolbar=no,scrollbars=yes,resizable=yes,top=100,left=100,width=400,height=500");
 		});
 
-	// Cut toolbar icon
-	////////////////////
-	$('<button><i class="icon-scissors"></i></button>')
-		.appendTo($('#page-toolbar'))
-		.on('click', (e) => ed.cut());
 
-	// Paste toolbar icon
-	//////////////////////
-	$('<button><i class="icon-paste4"></i></button>')
-		.appendTo($('#page-toolbar'))
-		.on('click', (e) => ed.paste());
+	// Create toolbar...
+	/////////////////////
+	const makeEdTool = (action, icon, tip) => {
+		$(`<button title="${tip}"><i class="icon-${icon}"></i></button>`)
+			.appendTo($('#page-toolbar'))
+			.on('click', (e) => action.call(ed,e));
+		};
+	makeEdTool(ed.cut,   'scissors', 'Cut' );
+	makeEdTool(ed.paste, 'paste4', 'Paste child(ren)');
+	makeEdTool(ed.save,  'database-upload', 'Save Tree Structure');
 
 	new UBOW.DBTableBackupRestore('#page-toolbar', {
 		tbl: 'cats',

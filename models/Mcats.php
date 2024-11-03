@@ -193,5 +193,18 @@ class Mcats extends MY_Model {
 		fclose($file);
 		}
 
+	/**
+	* Update the tree structure, where $nodes looks like
+	*	(1, 1, 8, "Cat 1"),(2, 9, 10, "Cat 2"), ... , (id, lft, rgt, title)
+	*/
+	function bulk_update_struct($nodes) {
+		return $this->db->query(
+			"INSERT INTO cats (id, lft, rgt, title) VALUES "
+			. $nodes
+			. ' ON DUPLICATE KEY UPDATE lft=VALUES(lft), rgt=VALUES(rgt);'
+			);
+
+		}
+
 	}
 /* ~~cms/cats/models/Mcats.php */

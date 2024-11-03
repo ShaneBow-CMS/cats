@@ -69,6 +69,13 @@ class Cat extends MY_Controller {
 		respond(0, "SUCCESS", $data);
 		}
 
+	public function save_struct() {
+		$this->load->helper('ajax');
+		try { $data = $this->mcats->bulk_update_struct($_POST['struct']); }
+		catch (Exception $e) {db_error($e->getMessage());}
+		respond(0, "SUCCESS", $data);
+		}
+
 	public function seed() {
 		$this->require_role(ROLE_ADMIN);
 		$this->load->model('mseeder');
