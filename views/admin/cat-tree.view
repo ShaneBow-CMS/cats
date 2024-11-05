@@ -6,21 +6,22 @@ i.lft,i.rgt {color:red}
 ~~tables/express/tbl-hor-min-a.css
 table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
 .btns {text-align:right}
-#page-toolbar > * {display:inline}
+#page-toolbarx > * {display:inline}
+.tree-tools {padding: 7px 7px 0 0}
+.tree-tools > * {margin-left: 3px}
 </style>
 
 <div class="row">
 
  <div class="col-sm-6">
-
   <div class="panel panel-default">
+   <div class="tree-tools pull-right"></div>
    <ul class="nav nav-tabs">
     <li class="active"><a href="#tree-editor" data-toggle="tab">Tree</a></li>
     <li><a href="#list" data-toggle="tab">List</a></li>
    </ul>
    <div class="tab-content">
-    <div id="tree-editor" class="tab-pane fade in active">
-    </div>
+    <div id="tree-editor" class="tab-pane fade in active"></div>
 
     <div id="list" class="tab-pane fade">
      <table id="xnodes-list" class="tbl-hor-min-a">
@@ -41,7 +42,6 @@ table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
     </div>
    </div>
   </div>
-
  </div>
 
  <div class="col-sm-6">
@@ -82,6 +82,7 @@ $(() => {
 	const ed = new NSMTreeEditor('#tree-editor', {
 		format: (n) => `<i class="icon-${n.icon}"></i>
 			<i class="lft">${n.lft}</i> <b>${n.title}</b> <i class="rgt">${n.rgt}</i>`,
+		toolbar: '.tree-tools',
 		onSelect: (n) => {
 			formActive.populate(n);
 			UBOW.ajax('/cat/fetch/'+n.id, {}, function(err,dat,msg) {
@@ -125,17 +126,8 @@ $(() => {
 		});
 
 
-	// Create toolbar...
+	// Page toolbar...
 	/////////////////////
-	const makeEdTool = (action, icon, tip) => {
-		$(`<button title="${tip}"><i class="icon-${icon}"></i></button>`)
-			.appendTo($('#page-toolbar'))
-			.on('click', (e) => action.call(ed,e));
-		};
-	makeEdTool(ed.cut,   'scissors', 'Cut' );
-	makeEdTool(ed.paste, 'paste4', 'Paste child(ren)');
-	makeEdTool(ed.save,  'database-upload', 'Save Tree Structure');
-
 	new UBOW.DBTableBackupRestore('#page-toolbar', {
 		tbl: 'cats',
 		});
