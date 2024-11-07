@@ -6,9 +6,14 @@ i.lft,i.rgt {color:red}
 ~~tables/express/tbl-hor-min-a.css
 table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
 .btns {text-align:right}
-#page-toolbarx > * {display:inline}
+
 .tree-tools {padding: 7px 7px 0 0}
 .tree-tools > * {margin-left: 3px}
+
+~~cms/pages/assets/page-summary.css
+.page-summary .panel-group {margin-bottom: 5px}
+.row.no-gutter {margin-right:-5px; margin-left:-5px}
+.row.no-gutter > div {padding-right:5px; padding-left:5px}
 </style>
 
 <div class="row">
@@ -45,33 +50,33 @@ table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
  </div>
 
  <div class="col-sm-6">
-  <div class="panel panel-default">
-   <div class="panel-heading">Active Node</div>
-   <form class="panel-body active-node"></form>
-  </div>
+  <h3 id="cat-title">Pages</h3>
+  <div id="cat-pages"></div>
+  <button class="btn preview btn-primary btn-outline btn-block" alt="Preview"><i class="icon-eye4"></i></button>
  </div>
+
 </div>
 
 <script>
 $(() => {
-	const formActive = new UBOW.Form('form.active-node', {
-		fields: [
-				['id', 'input'],
-				['title', 'input'],
-				['slug', 'input'],
-				['layout', 'input'],
-				['lead', 'input'],
-				['icon', 'input'],
-				['content', 'textarea'],
-			],
+	// preview button
+	let _title = '';
+	let _slug = '';
+	$('button.preview').on('click', function(e){
+		e.preventDefault();
+		if (!_slug) return UBOW.flashError('Slug is blank!');
+		var myWindow = window.open('/page/category/'+slug, title,
+			"toolbar=no,scrollbars=yes,resizable=yes,top=100,left=100,width=400,height=500");
 		});
-	const $hiddenBtns = $(`
-    <div class="form-group hidden btns">
-     <button class="btn preview btn-primary btn-outline" alt="Preview"><i class="icon-eye4"></i></button>
-     <button type="submit" class="btn btn-primary btn-outline">
-      <?= $this->lang->line('shop_Submit'); ?></button>
-    </div>`).appendTo(formActive.$frm);
 
+	// Pages in selected cat
+	const pagesInCat = new UBOW.PageSummaryFetcher('#cat-pages', {
+		extra: {by:'cat', id:1},
+		meta: 'title',
+		container: '<div class="row same-height-row no-gutter"></div>',
+		});
+
+	// Tree Editor
 	const ed = new NSMTreeEditor('#tree-editor', {
 		title: 'Site Category',
 		fields: [
@@ -89,13 +94,12 @@ $(() => {
 			<i class="lft">${n.lft}</i> <b>${n.title}</b> <i class="rgt">${n.rgt}</i>`,
 		toolbar: '.tree-tools',
 		onSelect: (n) => {
-			formActive.populate(n);
-	//		UBOW.ajax('/cat/fetch/'+n.id, {}, function(err,dat,msg) {
-	//			if (err) return UBOW.flashError(msg);
-	//			$active.find('[name=content]').val(dat.content);
-	//			$active.find('[name=layout]').val(dat.layout);
-	//			$hiddenBtns.removeClass('hidden');
-	//			});
+			_title = n.title;
+			_slug = n.slug;
+			$('#cat-title').text(n.title);
+			pagesInCat.reset({
+				extra: {by:'cat', id:n.id},
+				});
 			},
 		onSave: (nodes) => {
 			let data = {
@@ -108,15 +112,6 @@ $(() => {
 			},
 		});
 	ed.populate(<?= json_encode($nodes) ?>);
-
-	$('button.preview').on('click', function(e){
-		e.preventDefault();
-		var slug = $('[name=slug]').val(),
-			title = $('[name=title]').val();
-		if (!slug) return UBOW.flashError('Slug is blank!');
-		var myWindow = window.open('/page/category/'+slug, title,
-			"toolbar=no,scrollbars=yes,resizable=yes,top=100,left=100,width=400,height=500");
-		});
 
 	// Page toolbar...
 	/////////////////////
