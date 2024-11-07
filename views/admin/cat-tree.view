@@ -54,8 +54,6 @@ table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
 
 <script>
 $(() => {
-	const $active = $('form.active-node');
-
 	const formActive = new UBOW.Form('form.active-node', {
 		fields: [
 				['id', 'input'],
@@ -86,17 +84,18 @@ $(() => {
 				['content', 'textarea'],
 			],
 		urlAdd: '/cat/post',
+		urlUpdate: '/cat/post',
 		format: (n) => `<i class="icon-${n.icon}"></i>
 			<i class="lft">${n.lft}</i> <b>${n.title}</b> <i class="rgt">${n.rgt}</i>`,
 		toolbar: '.tree-tools',
 		onSelect: (n) => {
 			formActive.populate(n);
-			UBOW.ajax('/cat/fetch/'+n.id, {}, function(err,dat,msg) {
-				if (err) return UBOW.flashError(msg);
-				$active.find('[name=content]').val(dat.content);
-				$active.find('[name=layout]').val(dat.layout);
-				$hiddenBtns.removeClass('hidden');
-				});
+	//		UBOW.ajax('/cat/fetch/'+n.id, {}, function(err,dat,msg) {
+	//			if (err) return UBOW.flashError(msg);
+	//			$active.find('[name=content]').val(dat.content);
+	//			$active.find('[name=layout]').val(dat.layout);
+	//			$hiddenBtns.removeClass('hidden');
+	//			});
 			},
 		onSave: (nodes) => {
 			let data = {
@@ -109,14 +108,6 @@ $(() => {
 			},
 		});
 	ed.populate(<?= json_encode($nodes) ?>);
-
-	$active.submit(function(e) {
-		e.preventDefault();
-		UBOW.ajaxForm($(this),'/cat/post', {}, function() {
-			UBOW.flashSuccess("OK reloading...");
-			location.replace(location.pathname);
-			});
-		});
 
 	$('button.preview').on('click', function(e){
 		e.preventDefault();

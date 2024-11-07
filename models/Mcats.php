@@ -68,7 +68,8 @@ class Mcats extends MY_Model {
 	* including the root
 	* and a count of pages in each category
 	****************************************/
-	public function get_cat_tree($flds='cats.id,cats.slug,cats.title,icon,cats.lead,lft,rgt') {
+//	public function get_cat_tree($flds='cats.id,cats.slug,cats.title,icon,cats.lead,lft,rgt') {
+	public function get_cat_tree($flds='cats.*') {
 		return $this->db->select($flds.',COUNT(pages.cid) as numpages')
 			->join('pages', 'pages.cid = cats.id','left outer')
 			->group_by('cats.id')
@@ -120,18 +121,7 @@ class Mcats extends MY_Model {
 		return $this->db->update('cats', $info);
 		}
 
-	/**
-	* format one category title/icon
-	* for the _cattree function below
-	*********************************/
-	private function _entry($node) {
-		$icon = $node['icon']? '<i class="icon-'.$node['icon'].'"></i> ' : '';
-		return $icon
-		//	.'<i class="lft">'.$node['lft'].'</i>'
-			.'<b>'.$node['title'].'</b>';
-		//	.'<i class="rgt">'.$node['rgt'].'</i>';
-		}
-
+/*********
 	function build_editor_tree($nodes) {
 		$this->load->library('Tree');
 		$htm = '<ul>';
@@ -149,6 +139,16 @@ class Mcats extends MY_Model {
 			};
 		$this->tree->build($nodes, $format, $get_attrs, $write);
 		return $htm.'</ul>';
+		}
+*********/
+
+	/**
+	* format one category title/icon
+	* for fwrite_nav_tree() below
+	*********************************/
+	private function _entry($node) {
+		$icon = $node['icon']? '<i class="icon-'.$node['icon'].'"></i> ' : '';
+		return $icon.'<b>'.$node['title'].'</b>';
 		}
 
 	function fwrite_nav_tree($nodes = null, $file_name = 'cattree2.div') {
