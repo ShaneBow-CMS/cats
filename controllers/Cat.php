@@ -57,10 +57,11 @@ class Cat extends MY_Controller {
 				$id = $this->mcats->add_node($_POST);
 			else
 				$this->mcats->update_info($id, $_POST);
-			$this->mcats->write_cattree_div();
+			$tree = $this->mcats->get_cat_tree();
+			$this->mcats->fwrite_nav_tree($tree, 'cattree2.div');
 			}
 		catch (Exception $e) {db_error($e->getMessage());}
-		respond(0, "SUCCESS", $id);
+		respond(0, "SUCCESS", $tree);
 		}
 
 	public function fetch($id) {
@@ -83,7 +84,7 @@ class Cat extends MY_Controller {
 		$this->mseeder->reseed_tables('Create Category Tables', [
 			'cats'
 			]);
-		$this->mcats->write_cattree_div();
+		$this->mcats->fwrite_nav_tree($tree, 'cattree2.div');
 		}
 	}
 /* _lib/cms/cats/controllers/Cat.php */

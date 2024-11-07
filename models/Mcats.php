@@ -66,7 +66,8 @@ class Mcats extends MY_Model {
 	/**
 	* Get entire tree
 	* including the root
-	********************/
+	* and a count of pages in each category
+	****************************************/
 	public function get_cat_tree($flds='cats.id,cats.slug,cats.title,icon,cats.lead,lft,rgt') {
 		return $this->db->select($flds.',COUNT(pages.cid) as numpages')
 			->join('pages', 'pages.cid = cats.id','left outer')
@@ -129,18 +130,6 @@ class Mcats extends MY_Model {
 		//	.'<i class="lft">'.$node['lft'].'</i>'
 			.'<b>'.$node['title'].'</b>';
 		//	.'<i class="rgt">'.$node['rgt'].'</i>';
-		}
-
-	/*
-	* @deprecated write_cattree_div
-	* create /public_html/assets/files/cattree.div
-	* which contains categories as nested <ul>
-	* It is loaded into site pages as a 'view fragment'
-	* Avoids need to access/build 'all cats' for each page
-	*********************************/
-	function write_cattree_div() {
-		$nodes = $this->get_cat_tree(); // with root
-		$this->fwrite_nav_tree($nodes, 'cattree2.div');
 		}
 
 	function build_editor_tree($nodes) {

@@ -47,17 +47,14 @@ table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
  <div class="col-sm-6">
   <div class="panel panel-default">
    <div class="panel-heading">Active Node</div>
-   <form class="panel-body active-node">
-   </form>
+   <form class="panel-body active-node"></form>
   </div>
  </div>
 </div>
 
-~~cms/cats/views/admin/dlg-cat-create.div
 <script>
 $(() => {
 	const $active = $('form.active-node');
-	const $dlg = $('#dlg-cat-create');
 
 	const formActive = new UBOW.Form('form.active-node', {
 		fields: [
@@ -73,13 +70,22 @@ $(() => {
 	const $hiddenBtns = $(`
     <div class="form-group hidden btns">
      <button class="btn preview btn-primary btn-outline" alt="Preview"><i class="icon-eye4"></i></button>
-     <a href="#dlg-cat-create" role="button" data-toggle="modal" class="btn btn-primary btn-outline">
-      Add Child</a>
      <button type="submit" class="btn btn-primary btn-outline">
       <?= $this->lang->line('shop_Submit'); ?></button>
     </div>`).appendTo(formActive.$frm);
 
 	const ed = new NSMTreeEditor('#tree-editor', {
+		title: 'Site Category',
+		fields: [
+				['id', 'input'],
+				['title', 'input'],
+				['slug', 'input'],
+				['layout', 'input'],
+				['lead', 'input'],
+				['icon', 'input'],
+				['content', 'textarea'],
+			],
+		urlAdd: '/cat/post',
 		format: (n) => `<i class="icon-${n.icon}"></i>
 			<i class="lft">${n.lft}</i> <b>${n.title}</b> <i class="rgt">${n.rgt}</i>`,
 		toolbar: '.tree-tools',
@@ -91,10 +97,6 @@ $(() => {
 				$active.find('[name=layout]').val(dat.layout);
 				$hiddenBtns.removeClass('hidden');
 				});
-
-			// populate child dialog
-			$dlg.find('[name=parent_id]').val(n.id);
-			$dlg.find('.modal-title').html(`<i class="icon-${n.icon}"></i> Create Child Category`);
 			},
 		onSave: (nodes) => {
 			let data = {
@@ -108,7 +110,7 @@ $(() => {
 		});
 	ed.populate(<?= json_encode($nodes) ?>);
 
-	$('form').submit(function(e) {
+	$active.submit(function(e) {
 		e.preventDefault();
 		UBOW.ajaxForm($(this),'/cat/post', {}, function() {
 			UBOW.flashSuccess("OK reloading...");
@@ -124,7 +126,6 @@ $(() => {
 		var myWindow = window.open('/page/category/'+slug, title,
 			"toolbar=no,scrollbars=yes,resizable=yes,top=100,left=100,width=400,height=500");
 		});
-
 
 	// Page toolbar...
 	/////////////////////
