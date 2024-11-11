@@ -18,7 +18,7 @@ table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
 
 <div class="row">
 
- <div class="col-sm-6">
+ <div class="col-sm-5 col-lg-4">
   <div class="panel panel-default">
    <div class="tree-tools pull-right"></div>
    <ul class="nav nav-tabs">
@@ -49,7 +49,7 @@ table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
   </div>
  </div>
 
- <div class="col-sm-6">
+ <div class="col-sm-7 col-lg-8">
   <h3 id="cat-title">Pages</h3>
   <div id="cat-pages"></div>
   <button class="btn preview btn-primary btn-outline btn-block" alt="Preview"><i class="icon-eye4"></i></button>
@@ -71,6 +71,8 @@ $(() => {
 
 	// Pages in selected cat
 	const pagesInCat = new UBOW.PageSummaryFetcher('#cat-pages', {
+		per_page: 36,
+		col_class: "col-xs-6 col-sm-4 col-lg-3",
 		extra: {by:'cat', id:1},
 		meta: 'title',
 		container: '<div class="row same-height-row no-gutter"></div>',
