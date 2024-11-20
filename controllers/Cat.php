@@ -24,6 +24,10 @@ class Cat extends MY_Controller {
 		}
 
 	public function index() {
+		redirect('/sitemap', 'refresh');
+		}
+
+	public function manage() {
 		$this->require_min_level(MIN_ADMIN_LEVEL);
 		$this->lang->load('shop', $this->session->userdata('lang'));
 		$data['title'] = 'Content Categories';
@@ -35,7 +39,7 @@ class Cat extends MY_Controller {
 	//	$nav_file_name = 'testtree3.div';
 	//	$data['nav_tree'] = $this->mcats->fwrite_nav_tree($nodes, $nav_file_name);
 
-		$this->load->view('admin/cat-tree', $data);
+		$this->load->view('admin/cms-cats-manager', $data);
 		}
 
 	/**
