@@ -65,7 +65,8 @@ $(() => {
 	$('button.preview').on('click', function(e){
 		e.preventDefault();
 		if (!_slug) return UBOW.flashError('Slug is blank!');
-		var myWindow = window.open('/page/category/'+slug, title,
+		let url = (_slug[0] == '/')? _slug : `/page/category/${_slug}`;
+		var myWindow = window.open(url, _title,
 			"toolbar=no,scrollbars=yes,resizable=yes,top=100,left=100,width=400,height=500");
 		});
 
