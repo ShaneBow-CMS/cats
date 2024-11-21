@@ -77,6 +77,7 @@ $(() => {
 		extra: {by:'cat', id:1},
 		meta: 'title',
 		container: '<div class="row same-height-row no-gutter"></div>',
+		uid: 7, // show edit button
 		});
 
 	// Tree Editor
