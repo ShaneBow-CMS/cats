@@ -79,11 +79,13 @@ $(() => {
 				extra: {by:'cat', id:1},
 				meta: 'title',
 				container: '<div class="row same-height-row no-gutter"></div>',
-				uid: 7,
 				});
 			}
 
-		// override - able to change category
+		// @override - any admin can edit page
+		canEdit(item) { return true; }
+
+		// @override - able to change category
 		rendered($item, item, $list) {
 			super.rendered($item, item, $list);
 			$(`<span class="btn-move"><i class="icon-tree7"></i></span>`)
