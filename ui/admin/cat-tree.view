@@ -59,7 +59,7 @@ table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
 
 <script>
 $(() => {
-	// preview button
+	// preview button (selected parent cat)
 	let _title = '';
 	let _slug = '';
 	$('button.preview').on('click', function(e){
@@ -71,14 +71,29 @@ $(() => {
 		});
 
 	// Pages in selected cat
-	const pagesInCat = new UBOW.PageSummaryFetcher('#cat-pages', {
-		per_page: 36,
-		col_class: "col-xs-6 col-sm-4 col-lg-3",
-		extra: {by:'cat', id:1},
-		meta: 'title',
-		container: '<div class="row same-height-row no-gutter"></div>',
-		uid: 7, // show edit button
-		});
+	class PageSummaries extends UBOW.PageSummaryFetcher {
+		constructor(sel) {
+			super(sel, {
+				per_page: 36,
+				col_class: "col-xs-6 col-sm-4 col-lg-3",
+				extra: {by:'cat', id:1},
+				meta: 'title',
+				container: '<div class="row same-height-row no-gutter"></div>',
+				uid: 7,
+				});
+			}
+
+		// override - able to change category
+		rendered($item, item, $list) {
+			super.rendered($item, item, $list);
+			$(`<span class="btn-move"><i class="icon-tree7"></i></span>`)
+				.appendTo($item.find('.thumb'))
+				.on('click', () => {
+					UBOW.flashError(`MOVE ${item.title}`);
+					});
+			}
+		}
+	const pagesInCat = new PageSummaries('#cat-pages'); 
 
 	// Tree Editor
 	const ed = new NSMTreeEditor('#tree-editor', {
