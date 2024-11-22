@@ -109,26 +109,20 @@ $(() => {
 				['icon', 'input'],
 				['content', 'textarea'],
 			],
+		nameField: 'title',
 		urlAdd: '/cat/post',
 		urlUpdate: '/cat/post',
+		urlSaveStruct: '/cat/save-struct',
 		format: (n) => `<i class="icon-${n.icon}"></i>
 			<i class="lft">${n.lft}</i> <b>${n.title}</b> <i class="rgt">${n.rgt}</i>`,
 		toolbar: '.tree-tools',
+		onChange:(nodes) => UBOW.flashError('tree changed not handled'),
 		onSelect: (n) => {
 			_title = n.title;
 			_slug = n.slug;
 			$('#cat-title').text(n.title);
 			pagesInCat.reset({
 				extra: {by:'cat', id:n.id},
-				});
-			},
-		onSave: (nodes) => {
-			let data = {
-				struct: nodes.map(n => `(${n.id},${n.lft},${n.rgt},"${n.title}")`).join(',')
-				};
-			UBOW.ajax('/cat/save-struct', data, function(err,dat,msg) {
-				if (err) return UBOW.flashError(msg);
-				UBOW.flashSuccess('saved');
 				});
 			},
 		});
