@@ -70,6 +70,32 @@ $(() => {
 			"toolbar=no,scrollbars=yes,resizable=yes,top=100,left=100,width=400,height=500");
 		});
 
+	// Move page to different cat
+	const populateCatSelect = (form, cats) => {
+		let $fld = form.$fld('cid');
+		$fld.empty();
+		cats.forEach(cat => $fld.append(`<option value="${cat.id}">${cat.title}</option>`));
+		};
+	const $dlgMovePage = new UBOW.DlgForm({
+		title: `Move Node`,
+		fields: [
+			[`title`, 'input'],
+			[`cid`, 'select'],
+			],
+		onRendered: (form) => form.relabel('cid', 'Category'),
+		onSubmit: (updates) => {
+			data = {
+				id:updates.id,
+				f: 'cid',
+				v: updates.cid,
+				};
+			UBOW.ajaxForm($dlgMovePage.form.$frm, '/page/set_meta', data, (msg, id) => {
+				pagesInCat.reload();
+				$dlgMovePage.hide();
+				});
+			},
+		});
+
 	// Pages in selected cat
 	class PageSummaries extends UBOW.PageSummaryFetcher {
 		constructor(sel) {
@@ -91,6 +117,7 @@ $(() => {
 			$(`<span class="btn-move"><i class="icon-tree7"></i></span>`)
 				.appendTo($item.find('.thumb'))
 				.on('click', () => {
+					$dlgMovePage.edit(item);
 					UBOW.flashError(`MOVE ${item.title}`);
 					});
 			}
@@ -116,7 +143,9 @@ $(() => {
 		format: (n) => `<i class="icon-${n.icon}"></i>
 			<i class="lft">${n.lft}</i> <b>${n.title}</b> <i class="rgt">${n.rgt}</i>`,
 		toolbar: '.tree-tools',
-		onChange:(nodes) => UBOW.flashError('tree changed not handled'),
+		onChanged:(nodes) => {
+			populateCatSelect($dlgMovePage.form, nodes);
+			},
 		onSelect: (n) => {
 			_title = n.title;
 			_slug = n.slug;
@@ -127,6 +156,7 @@ $(() => {
 			},
 		});
 	ed.populate(<?= json_encode($nodes) ?>);
+	populateCatSelect($dlgMovePage.form, ed.nodes);
 
 	// Page toolbar...
 	/////////////////////
