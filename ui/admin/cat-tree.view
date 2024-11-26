@@ -129,6 +129,7 @@ $(() => {
 		title: 'Site Category',
 		fields: [
 				['id', 'input'],
+				['id_page', 'input'],
 				['title', 'input'],
 				['slug', 'input'],
 				['layout', 'input'],
@@ -164,5 +165,7 @@ $(() => {
 		tbl: 'cats',
 		});
 
+	$(`<a href="/page/create" class="btn"><i class="icon-stack-plus create"></i></a>`)
+		.appendTo($('#page-toolbar'));
 	});
 </script>
