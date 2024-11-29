@@ -1,6 +1,6 @@
 (
  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
- `id_page` int(10) unsigned  NOT NULL DEFAULT 0
+ `id_page` int(10) unsigned  NOT NULL DEFAULT 0,
  `slug` varchar(60),
  `mid` int(10) unsigned default 0 COMMENT "banner media id",
  `flags` smallint(3) unsigned DEFAULT '0',
