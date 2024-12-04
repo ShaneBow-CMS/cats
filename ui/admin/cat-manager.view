@@ -11,9 +11,18 @@ table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
 .tree-tools > * {margin-left: 3px}
 
 ~~cms/pages/assets/page-summary.css
+.page-summary.unpublished {
+	border-bottom: 1px solid #f00;
+	background: #ddd;
+	}
 .page-summary .panel-group {margin-bottom: 5px}
 .row.no-gutter {margin-right:-5px; margin-left:-5px}
 .row.no-gutter > div {padding-right:5px; padding-left:5px}
+
+.page-summary .toggle-publish {cursor:pointer}
+.unpublished  i.icon-eye.toggle-publish {color:red}
+.unpublished  i.icon-eye.toggle-publish:before{content:"\ecae";}
+
 </style>
 
 <div class="row">
@@ -59,6 +68,8 @@ table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
 
 <script>
 $(() => {
+	const PUBLISHED = 128;
+
 	// preview button (selected parent cat)
 	let _title = '';
 	let _slug = '';
@@ -102,7 +113,10 @@ $(() => {
 			super(sel, {
 				per_page: 36,
 				col_class: "col-xs-6 col-sm-4 col-lg-3",
-				extra: {by:'cat', id:1},
+				extra: {
+					isAdmin: true,
+					by:'cat', id:1,
+					},
 				meta: 'title',
 				container: '<div class="row same-height-row no-gutter"></div>',
 				});
@@ -119,6 +133,17 @@ $(() => {
 				.on('click', () => {
 					$dlgMovePage.edit(item);
 					UBOW.flashError(`MOVE ${item.title}`);
+					});
+			$(`<i class="icon-eye toggle-publish"></i> `)
+				.prependTo($item.find('b.title'))
+				.on('click', () => {
+					let $ps = $item.find('.page-summary');
+					let publish = $ps.hasClass('unpublished');
+					UBOW.ajax(`/page/${publish?'':'un'}publish/${item.id}`, {}, (err,dat,msg) => {
+						if (err) return UBOW.flashError(msg);
+						$ps.toggleClass('unpublished');
+						UBOW.flashSuccess(`${msg} page id: ${dat}`);
+						});
 					});
 			}
 		}
@@ -152,7 +177,7 @@ $(() => {
 			_slug = n.slug;
 			$('#cat-title').text(n.title);
 			pagesInCat.reset({
-				extra: {by:'cat', id:n.id},
+				extra: {by:'cat', id:n.id, isAdmin: true},
 				});
 			},
 		});
