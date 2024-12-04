@@ -113,6 +113,31 @@ class Mcats extends MY_Model {
 		}
 
 	/**
+	* filter out any cats that have an
+	* assigned display page (ie id_page != 0)
+	* and that page is NOT published
+	*************************************/
+	public function get_published_cats() {
+		$cats = $this->db->select('cats.*'
+				. ',IFNULL(display_page.flags,0) as pflags'
+				. ',((IFNULL(display_page.flags,128) & 128) = 128) as publish'
+				. ',COUNT(p_in_cat.cid) as numpages'
+				)
+			->join('pages p_in_cat', 'p_in_cat.cid = cats.id','left outer')
+			->join('pages display_page', 'display_page.id = cats.id_page','left outer')
+			->group_by('cats.id')
+			->order_by('lft')
+			->get('cats')
+			->result_array();
+		$nodes = [];
+		foreach ($cats as $c) {
+			if ($c['publish'])
+				$nodes[] = $c;
+			}
+		return $nodes;
+		}
+
+	/**
 	* update one node's info
 	* does NOT change tree hierarchy
 	*********************************/
@@ -120,27 +145,6 @@ class Mcats extends MY_Model {
 		$this->db->where('id', $id);
 		return $this->db->update('cats', $info);
 		}
-
-/*********
-	function build_editor_tree($nodes) {
-		$this->load->library('Tree');
-		$htm = '<ul>';
-		$write = function($str) use(&$htm) {
-			$htm .= $str;
-			};
-		$get_attrs = function($row) {
-			return 'lft="'.$row['lft'].'" rgt="'.$row['rgt'].'"'
-				.' node-id="'.$row['id'].'"'
-				.' title="'.$row['lead'].'"';
-			};
-		$format = function($row, $has_children) {
-			$icon = '<i class="icon-'.$row['icon'].'"></i> ';
-			return $icon.'<i class="lft">'.$row['lft'].'</i> <b>'.$row['title'].'</b> <i class="rgt">'.$row['rgt'].'</i>';
-			};
-		$this->tree->build($nodes, $format, $get_attrs, $write);
-		return $htm.'</ul>';
-		}
-*********/
 
 	/**
 	* format one category title/icon
@@ -151,11 +155,9 @@ class Mcats extends MY_Model {
 		return $icon.'<b>'.$node['title'].'</b>';
 		}
 
-	function fwrite_nav_tree($nodes = null, $file_name = 'cattree2.div') {
+	function fwrite_nav_tree($file_name = 'cattree2.div') {
 		$this->load->library('Tree');
-		if (!$nodes) {
-			$nodes = $this->get_cat_tree(); // with root
-			}
+		$nodes = $this->get_published_cats(); // with root
 		unset($nodes[0]); // remove root node
 
 		$fileSpec = realpath(APPPATH.'../public_html/assets/files/').'/'. $file_name;

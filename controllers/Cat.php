@@ -37,7 +37,7 @@ class Cat extends MY_Controller {
 
 		// Write Nav tree - for future reference
 	//	$nav_file_name = 'testtree3.div';
-	//	$data['nav_tree'] = $this->mcats->fwrite_nav_tree($nodes, $nav_file_name);
+	//	$data['nav_tree'] = $this->mcats->fwrite_nav_tree($nav_file_name);
 
 		$this->load->view('admin/cms-cats-manager', $data);
 		}
@@ -61,8 +61,8 @@ class Cat extends MY_Controller {
 				$id = $this->mcats->add_node($_POST);
 			else
 				$this->mcats->update_info($id, $_POST);
-			$tree = $this->mcats->get_cat_tree();
-			$this->mcats->fwrite_nav_tree($tree, 'cattree2.div');
+			$tree = $this->mcats->get_cat_tree(); // all nodes (for admin)
+			$this->mcats->fwrite_nav_tree('cattree2.div'); // only published nodes!! (for users)
 			}
 		catch (Exception $e) {db_error($e->getMessage());}
 		respond(0, "SUCCESS", $tree);
@@ -88,7 +88,7 @@ class Cat extends MY_Controller {
 		$this->mseeder->reseed_tables('Create Category Tables', [
 			'cats'
 			]);
-		$this->mcats->fwrite_nav_tree($tree, 'cattree2.div');
+		$this->mcats->fwrite_nav_tree('cattree2.div');
 		}
 	}
 /* _lib/cms/cats/controllers/Cat.php */
