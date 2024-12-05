@@ -82,6 +82,17 @@ class Cat extends MY_Controller {
 		respond(0, "SUCCESS", $data);
 		}
 
+	/**
+	* force update of the sidebar nav-tree
+	***************************************/
+	public function fwrite_nav_tree() {
+		$this->load->helper('ajax');
+		try { $filespec = $this->mcats->fwrite_nav_tree(); }
+		catch (Exception $e) {db_error($e->getMessage());}
+		respond(0, "Updated", $filespec);
+		}
+
+
 	public function seed() {
 		$this->require_role(ROLE_ADMIN);
 		$this->load->model('mseeder');

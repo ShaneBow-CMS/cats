@@ -192,5 +192,15 @@ $(() => {
 
 	$(`<a href="/page/create" class="btn"><i class="icon-stack-plus create"></i></a>`)
 		.appendTo($('#page-toolbar'));
+
+	$('<button title="update sidebar nav"><i class="icon-share2"></i></button>')
+		.appendTo($('#page-toolbar'))
+		.on('click', function() {
+			UBOW.ajax('/cat/fwrite_nav_tree', {}, function(e,m,d) {
+				if (e) return UBOW.flashError(`ERROR: ${m}`);
+				UBOW.flashSuccess(`${m}: ${d}`);
+				});
+			});
+
 	});
 </script>

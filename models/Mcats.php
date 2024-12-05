@@ -182,6 +182,7 @@ class Mcats extends MY_Model {
 			};
 		$this->tree->build($nodes, $format, $get_attrs, $write);
 		fclose($file);
+		return $fileSpec;
 		}
 
 	/**
