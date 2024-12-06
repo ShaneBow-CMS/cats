@@ -118,6 +118,18 @@ class Mcats extends MY_Model {
 	* and that page is NOT published
 	*************************************/
 	public function get_published_cats() {
+		$sql = 'SELECT cats.*, IFNULL(display_page.flags, 0) as pflags'
+			.',((IFNULL(display_page.flags, 128) & 128) = 128) as publish'
+			.', COUNT(child_pages.cid) as numpages FROM cats'
+			.' LEFT OUTER JOIN pages child_pages ON child_pages.cid = cats.id' // only direct, not grandkids...
+			.' LEFT OUTER JOIN pages display_page ON display_page.id = cats.id_page'
+			.' GROUP BY cats.id ORDER BY lft';
+
+		$cats = $this->db
+			->query($sql)
+			->result_array();
+
+/**************
 		$cats = $this->db->select('cats.*'
 				. ',IFNULL(display_page.flags,0) as pflags'
 				. ',((IFNULL(display_page.flags,128) & 128) = 128) as publish'
@@ -129,6 +141,8 @@ class Mcats extends MY_Model {
 			->order_by('lft')
 			->get('cats')
 			->result_array();
+**************/
+
 		$nodes = [];
 		foreach ($cats as $c) {
 			if ($c['publish'])
