@@ -3,6 +3,8 @@ li.on {background-color: yellow}
 li:hover {cursor:pointer}
 i.lft,i.rgt {color:red}
 
+.row.no-gutter {margin-right:-5px; margin-left:-5px}
+.row.no-gutter > div {padding-right:5px; padding-left:5px}
 ~~tables/express/tbl-hor-min-a.css
 table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
 .btns {text-align:right}
@@ -10,19 +12,7 @@ table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
 .tree-tools {padding: 7px 7px 0 0}
 .tree-tools > * {margin-left: 3px}
 
-~~cms/pages/assets/page-summary.css
-.page-summary.unpublished {
-	border-bottom: 1px solid #f00;
-	background: #ddd;
-	}
-.page-summary .panel-group {margin-bottom: 5px}
-.row.no-gutter {margin-right:-5px; margin-left:-5px}
-.row.no-gutter > div {padding-right:5px; padding-left:5px}
-
-.page-summary .toggle-publish {cursor:pointer}
-.unpublished  i.icon-eye.toggle-publish {color:red}
-.unpublished  i.icon-eye.toggle-publish:before{content:"\ecae";}
-
+~~cms/pages/assets/admin-page-summary.css
 </style>
 
 <div class="row">
@@ -108,46 +98,17 @@ $(() => {
 		});
 
 	// Pages in selected cat
-	class PageSummaries extends UBOW.PageSummaryFetcher {
-		constructor(sel) {
-			super(sel, {
-				per_page: 36,
-				col_class: "col-xs-6 col-sm-4 col-lg-3",
-				extra: {
-					isAdmin: true,
-					by:'cat', id:1,
-					},
-				meta: 'title',
-				container: '<div class="row same-height-row no-gutter"></div>',
-				});
-			}
-
-		// @override - any admin can edit page
-		canEdit(item) { return true; }
+	class PageSummaries extends UBOW.AdminPageSummaryFetcher {
 
 		// @override - able to change category
 		rendered($item, item, $list) {
 			super.rendered($item, item, $list);
 			$(`<span class="btn-move"><i class="icon-tree7"></i></span>`)
 				.appendTo($item.find('.thumb'))
-				.on('click', () => {
-					$dlgMovePage.edit(item);
-					UBOW.flashError(`MOVE ${item.title}`);
-					});
-			$(`<i class="icon-eye toggle-publish"></i> `)
-				.prependTo($item.find('b.title'))
-				.on('click', () => {
-					let $ps = $item.find('.page-summary');
-					let publish = $ps.hasClass('unpublished');
-					UBOW.ajax(`/page/${publish?'':'un'}publish/${item.id}`, {}, (err,dat,msg) => {
-						if (err) return UBOW.flashError(msg);
-						$ps.toggleClass('unpublished');
-						UBOW.flashSuccess(`${msg} page id: ${dat}`);
-						});
-					});
+				.on('click', () => $dlgMovePage.edit(item));
 			}
 		}
-	const pagesInCat = new PageSummaries('#cat-pages'); 
+	const pagesInCat = new PageSummaries('#cat-pages');
 
 	// Tree Editor
 	const ed = new NSMTreeEditor('#tree-editor', {
