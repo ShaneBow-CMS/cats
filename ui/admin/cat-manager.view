@@ -106,7 +106,7 @@ $(() => {
 				.on('click', () => $dlgMovePage.edit(item));
 			}
 		}
-	const pagesInCat = new PageSummaries('#cat-pages');
+	const pagesInCat = new PageSummaries('#cat-pages', 'cat');
 
 	// Tree Editor
 	const ed = new NSMTreeEditor('#tree-editor', {
@@ -135,9 +135,7 @@ $(() => {
 			_title = n.title;
 			_slug = n.slug;
 			$('#cat-title').text(n.title);
-			pagesInCat.reset({
-				extra: {by:'cat', id:n.id, isAdmin: true},
-				});
+			pagesInCat.getId(n.id);
 			},
 		});
 	ed.populate(<?= json_encode($nodes) ?>);
