@@ -3,8 +3,6 @@ li.on {background-color: yellow}
 li:hover {cursor:pointer}
 i.lft,i.rgt {color:red}
 
-.row.no-gutter {margin-right:-5px; margin-left:-5px}
-.row.no-gutter > div {padding-right:5px; padding-left:5px}
 ~~tables/express/tbl-hor-min-a.css
 table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
 .btns {text-align:right}
