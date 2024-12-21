@@ -62,3 +62,7 @@ Currently, the only way to unpublish a category is to:
 
 ADD COLUMN
 id_page int(10) unsigned not null default 0 AFTER id
+
+REMOVE COLUMNS
+etc
+content

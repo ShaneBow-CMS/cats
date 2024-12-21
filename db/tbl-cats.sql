@@ -10,8 +10,6 @@
  `layout` varchar(40),
  `title` varchar(60) NOT NULL,
  `lead` varchar(100),
- `etc` varchar(250),
- `content` text,
   PRIMARY KEY (`id`),
   UNIQUE INDEX (`slug`),
   KEY `zone_id` (`lft`),

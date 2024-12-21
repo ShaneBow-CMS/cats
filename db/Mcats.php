@@ -42,8 +42,7 @@ class Mcats extends MY_Model {
 			'title' => $post['title'],
 			'slug' => $post['slug'],
 			'lead'  => $post['lead'],
-			'icon' => $post['icon'],
-			'content' => $post['content']
+			'icon' => $post['icon']
 			];
 		$pos = $lft - 1;
 		if ($this->db->query("UPDATE `$tree` SET rgt=rgt+2 WHERE rgt>$pos")

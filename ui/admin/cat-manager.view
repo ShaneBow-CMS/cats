@@ -119,7 +119,6 @@ $(() => {
 				['layout', 'input'],
 				['lead', 'input'],
 				['icon', 'input'],
-				['content', 'textarea'],
 			],
 		nameField: 'title',
 		urlAdd: '/cat/post',
