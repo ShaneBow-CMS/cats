@@ -3,4 +3,5 @@
 		['field'=> 'slug',       'rules'=> 'required|max_length[60]'],
 		['field'=> 'lead',       'rules'=> 'max_length[100]'],
 		['field'=> 'icon',       'rules'=> 'max_length[15]'],
+		['field'=> 'id_page',    'rules'=> 'required|is_natural']
 		],

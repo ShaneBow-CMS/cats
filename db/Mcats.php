@@ -29,11 +29,13 @@ class Mcats extends MY_Model {
 	***********************************/
 	public function add_node($post) {
 		$tree = 'cats';
+		$id_parent = $post['parent_id'];
 		$parent = $this->db
-			->get_where($tree, ['id' => $post['parent_id']])
+			->get_where($tree, ['id' => $id_parent])
 			->row_array();
 		if (!$parent)
 			throw new Exception("parent node not found");
+		$id_page = $post['id_page'];
 
 		$lft = $parent['rgt'];
 		$node = [
@@ -42,8 +44,14 @@ class Mcats extends MY_Model {
 			'title' => $post['title'],
 			'slug' => $post['slug'],
 			'lead'  => $post['lead'],
-			'icon' => $post['icon']
+			'icon' => $post['icon'],
+			'id_page' => $id_page
 			];
+		// update the cat's page's parent
+		if ($id_page > 0)
+			$this->db->query("UPDATE `pages` SET cid=$id_parent WHERE id=$id_page");
+
+		// Make room in the tree for the new node
 		$pos = $lft - 1;
 		if ($this->db->query("UPDATE `$tree` SET rgt=rgt+2 WHERE rgt>$pos")
 		&&  $this->db->query("UPDATE `$tree` SET lft=lft+2 WHERE lft>$pos")) {
@@ -81,8 +89,9 @@ class Mcats extends MY_Model {
 	* Get all descendants of a node
 	* @param $parent either a node id or a node
 	********************************************/
-	public function between($lft, $rgt) {
+	public function between($lft, $rgt, $and_where=FALSE) {
 		$where = 'lft BETWEEN '.$lft.' AND '.$rgt;
+		if ($and_where) $where .= ' AND '.$and_where;
 		return $this->db->select('cats.*,COUNT(pages.cid) as numpages')
 			->join('pages', 'pages.cid = cats.id','left outer')
 			->group_by('cats.id')
@@ -91,7 +100,7 @@ class Mcats extends MY_Model {
 			->result_array();
 		}
 
-	public function get_descendants($parent) {
+	public function get_descendants($parent, $and_where=FALSE) {
 		if (gettype($parent) != 'array') { // passed in id
 			$parent = $this->db
 				->get_where('cats', ['id' => $parent])
@@ -99,7 +108,7 @@ class Mcats extends MY_Model {
 			if (!$parent)
 				throw new Exception("parent node not found");
 			}
-		return $this->between($parent['lft']+1, $parent['rgt']);
+		return $this->between($parent['lft']+1, $parent['rgt'], $and_where);
 		}
 
 	public function get_subtree($slug) {
