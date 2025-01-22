@@ -9,8 +9,6 @@ table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
 
 .tree-tools {padding: 7px 7px 0 0}
 .tree-tools > * {margin-left: 3px}
-
-~~cms/pages/assets/admin-page-summary.css
 </style>
 
 <div class="row">
