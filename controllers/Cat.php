@@ -1,7 +1,7 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 /********************************************************************
 * @(#)Cat.php 20190219
-* Copyright © 2019 by Richard T. Salamone, Jr. All rights reserved.
+* Copyright ï¿½ 2019 by Richard T. Salamone, Jr. All rights reserved.
 *
 * CI Controller for dynamic cat content in UBOW web sites.
 *
@@ -70,7 +70,11 @@ class Cat extends MY_Controller {
 
 	public function fetch($id) {
 		$this->load->helper('ajax');
-		try { $data = $this->mcats->get($id); }
+		try {
+			if ($id=='0')
+				$data = $this->mcats->get_cat_tree();
+			else
+				$data = $this->mcats->get($id); }
 		catch (Exception $e) {db_error($e->getMessage());}
 		respond(0, "SUCCESS", $data);
 		}
