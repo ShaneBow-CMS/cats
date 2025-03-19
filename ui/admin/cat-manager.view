@@ -1,4 +1,6 @@
 <style>
+~~tree/nsm-tree/nsm-tree.css
+
 li.on {background-color: yellow}
 li:hover {cursor:pointer}
 i.lft,i.rgt {color:red}
@@ -9,6 +11,8 @@ table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
 
 .tree-tools {padding: 7px 7px 0 0}
 .tree-tools > * {margin-left: 3px}
+
+.tab-pane { padding:8px }
 </style>
 
 <div class="row">
@@ -20,10 +24,11 @@ table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
     <li class="active"><a href="#tree-editor" data-toggle="tab">Tree</a></li>
     <li><a href="#list" data-toggle="tab">List</a></li>
    </ul>
+
    <div class="tab-content">
     <div id="tree-editor" class="tab-pane fade in active"></div>
 
-    <div id="list" class="tab-pane fade">
+    <div id="list" class="tab-pane fade pad10">
      <table class="tbl-hor-min-a">
       <thead>
        <tr><th>id</th><th>lft</th><th>rgt</th><th>title</th><!-- th>tip</th --></tr>
@@ -45,7 +50,7 @@ table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
  </div>
 
  <div class="col-sm-7 col-lg-8">
-  <h3 id="cat-title">Pages</h3>
+  <h3 id="cat-title" class="mt-0">Pages</h3>
   <div id="cat-pages"></div>
   <button class="btn preview btn-primary btn-outline btn-block" alt="Preview"><i class="icon-eye4"></i></button>
  </div>
