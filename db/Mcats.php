@@ -207,6 +207,34 @@ class Mcats extends MY_Model {
 		return $fileSpec;
 		}
 
+
+	// return an html string containing tree: <ul>...</ul>
+	// @TODO only gets published cats
+	function build_ddrop_tree() {
+		$this->load->library('Tree');
+		$nodes = $this->get_published_cats(); // with root
+		unset($nodes[0]); // remove root node
+		$htm = '<ul>';
+		$write = function($str) use(&$htm) {
+			$htm .= $str;
+			};
+		$get_attrs = function($row) {
+			return 'val="'.$row['id'].'"';
+			};
+
+		$format = function($row, $has_children) {
+			$icon = '<i class="icon-'.$row['icon'].'"></i>';
+			$name = $row['title'];
+			$html = $icon.' '.$name;
+			if ($has_children) { // if node has kids
+				$html = '<a>'.$html.'</a>'.PHP_EOL;
+				}
+			return $html;
+			};
+		$this->tree->build($nodes, $format, $get_attrs, $write);
+		return $htm.'</ul>';
+		}
+
 	/**
 	* Update the tree structure, where $nodes looks like
 	*	(1, 1, 8, "Cat 1"),(2, 9, 10, "Cat 2"), ... , (id, lft, rgt, title)

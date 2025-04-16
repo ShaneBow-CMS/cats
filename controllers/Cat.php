@@ -97,6 +97,13 @@ class Cat extends MY_Controller {
 		}
 
 
+	/**
+	* cat tree for DrillDrop select
+	*********************************/
+	public function tree() {
+		die($this->mcats->build_ddrop_tree());
+		}
+
 	public function seed() {
 		$this->require_role(ROLE_ADMIN);
 		$this->load->model('mseeder');
