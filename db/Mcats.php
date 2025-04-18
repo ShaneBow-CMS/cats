@@ -28,10 +28,10 @@ class Mcats extends MY_Model {
 	* $post must include the parent_id
 	***********************************/
 	public function add_node($post) {
-		$tree = 'cats';
+		$tbl = 'cats';
 		$id_parent = $post['parent_id'];
 		$parent = $this->db
-			->get_where($tree, ['id' => $id_parent])
+			->get_where($tbl, ['id' => $id_parent])
 			->row_array();
 		if (!$parent)
 			throw new Exception("parent node not found");
@@ -53,9 +53,9 @@ class Mcats extends MY_Model {
 
 		// Make room in the tree for the new node
 		$pos = $lft - 1;
-		if ($this->db->query("UPDATE `$tree` SET rgt=rgt+2 WHERE rgt>$pos")
-		&&  $this->db->query("UPDATE `$tree` SET lft=lft+2 WHERE lft>$pos")) {
-			$id = $this->ins_id($tree, $node, FALSE); // ...then add the new node
+		if ($this->db->query("UPDATE `$tbl` SET rgt=rgt+2 WHERE rgt>$pos")
+		&&  $this->db->query("UPDATE `$tbl` SET lft=lft+2 WHERE lft>$pos")) {
+			$id = $this->ins_id($tbl, $node, FALSE); // ...then add the new node
 			if ($id) return $id;
 			}
 		$this->_throwError();
@@ -189,7 +189,7 @@ class Mcats extends MY_Model {
 			fwrite($file, $str);
 			};
 
-		$get_attrs = function($row) { return ''; };
+		$get_attrs = function($row, $has_children) { return ''; };
 
 		$format = function($row, $has_children) {
 			$slug = $row['slug'];
@@ -218,7 +218,7 @@ class Mcats extends MY_Model {
 		$write = function($str) use(&$htm) {
 			$htm .= $str;
 			};
-		$get_attrs = function($row) {
+		$get_attrs = function($row, $has_children) {
 			return 'val="'.$row['id'].'"';
 			};
 
