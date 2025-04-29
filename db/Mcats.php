@@ -235,6 +235,31 @@ class Mcats extends MY_Model {
 		return $htm.'</ul>';
 		}
 
+	// return an html string containing tree: <ul>...</ul>
+	// remove the requirement for <a> tag when <li> contains subtree
+	// @TODO only gets published cats
+	function build_ddrop_tree2() {
+		$this->load->library('Tree');
+		$nodes = $this->get_published_cats(); // with root
+		unset($nodes[0]); // remove root node
+		$htm = '<ul>';
+		$write = function($str) use(&$htm) {
+			$htm .= $str;
+			};
+		$get_attrs = function($row, $has_children) {
+			return 'val="'.$row['id'].'"';
+			};
+
+		$format = function($row, $has_children) {
+			$icon = '<i class="icon-'.$row['icon'].'"></i>';
+			$name = $row['title'];
+			$html = $icon.' '.$name;
+			return $html;
+			};
+		$this->tree->build($nodes, $format, $get_attrs, $write);
+		return $htm.'</ul>';
+		}
+
 	/**
 	* Update the tree structure, where $nodes looks like
 	*	(1, 1, 8, "Cat 1"),(2, 9, 10, "Cat 2"), ... , (id, lft, rgt, title)

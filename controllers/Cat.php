@@ -104,6 +104,10 @@ class Cat extends MY_Controller {
 		die($this->mcats->build_ddrop_tree());
 		}
 
+	public function tree2() {
+		die($this->mcats->build_ddrop_tree2());
+		}
+
 	public function seed() {
 		$this->require_role(ROLE_ADMIN);
 		$this->load->model('mseeder');
