@@ -137,20 +137,6 @@ class Mcats extends MY_Model {
 			->query($sql)
 			->result_array();
 
-/**************
-		$cats = $this->db->select('cats.*'
-				. ',IFNULL(display_page.flags,0) as pflags'
-				. ',((IFNULL(display_page.flags,128) & 128) = 128) as publish'
-				. ',COUNT(p_in_cat.cid) as numpages'
-				)
-			->join('pages p_in_cat', 'p_in_cat.cid = cats.id','left outer')
-			->join('pages display_page', 'display_page.id = cats.id_page','left outer')
-			->group_by('cats.id')
-			->order_by('lft')
-			->get('cats')
-			->result_array();
-**************/
-
 		$nodes = [];
 		foreach ($cats as $c) {
 			if ($c['publish'])
@@ -207,38 +193,10 @@ class Mcats extends MY_Model {
 		return $fileSpec;
 		}
 
-
-	// return an html string containing tree: <ul>...</ul>
-	// @TODO only gets published cats
-	function build_ddrop_tree() {
-		$this->load->library('Tree');
-		$nodes = $this->get_published_cats(); // with root
-		unset($nodes[0]); // remove root node
-		$htm = '<ul>';
-		$write = function($str) use(&$htm) {
-			$htm .= $str;
-			};
-		$get_attrs = function($row, $has_children) {
-			return 'val="'.$row['id'].'"';
-			};
-
-		$format = function($row, $has_children) {
-			$icon = '<i class="icon-'.$row['icon'].'"></i>';
-			$name = $row['title'];
-			$html = $icon.' '.$name;
-			if ($has_children) { // if node has kids
-				$html = '<a>'.$html.'</a>'.PHP_EOL;
-				}
-			return $html;
-			};
-		$this->tree->build($nodes, $format, $get_attrs, $write);
-		return $htm.'</ul>';
-		}
-
 	// return an html string containing tree: <ul>...</ul>
 	// remove the requirement for <a> tag when <li> contains subtree
 	// @TODO only gets published cats
-	function build_ddrop_tree2() {
+	function build_ddrop_tree() {
 		$this->load->library('Tree');
 		$nodes = $this->get_published_cats(); // with root
 		unset($nodes[0]); // remove root node
