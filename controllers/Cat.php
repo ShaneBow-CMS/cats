@@ -71,10 +71,18 @@ class Cat extends MY_Controller {
 	public function fetch($id) {
 		$this->load->helper('ajax');
 		try {
-			if ($id=='0')
-				$data = $this->mcats->get_cat_tree();
-			else
-				$data = $this->mcats->get($id); }
+			switch ($id) {
+				case '0': // all nodes (with root)
+					$data = $this->mcats->get_cat_tree();
+					break;
+				case 'pub':
+					$data = $this->mcats->get_published_cats(); // with root
+					break;
+				default:
+					$data = $this->mcats->get($id);
+					break;
+					}
+			}
 		catch (Exception $e) {db_error($e->getMessage());}
 		respond(0, "SUCCESS", $data);
 		}
@@ -95,7 +103,6 @@ class Cat extends MY_Controller {
 		catch (Exception $e) {db_error($e->getMessage());}
 		respond(0, "Updated", $filespec);
 		}
-
 
 	/**
 	* cat tree for DrillDrop select
