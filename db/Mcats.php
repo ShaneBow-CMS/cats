@@ -66,6 +66,8 @@ class Mcats extends MY_Model {
 	***************/
 	public function get_node($where) {
 		return $this->db
+			->select('cats.*,media.type_id as mtype')
+			->join('media', 'cats.mid = media.id','left outer')
 			->get_where('cats', $where)
 			->row_array();
 		}
@@ -76,9 +78,10 @@ class Mcats extends MY_Model {
 	* and a count of pages in each category
 	****************************************/
 //	public function get_cat_tree($flds='cats.id,cats.slug,cats.title,icon,cats.lead,lft,rgt') {
-	public function get_cat_tree($flds='cats.*') {
+	public function get_cat_tree($flds='cats.*,media.type_id as mtype') {
 		return $this->db->select($flds.',COUNT(pages.cid) as numpages')
 			->join('pages', 'pages.cid = cats.id','left outer')
+			->join('media', 'cats.mid = media.id','left outer')
 			->group_by('cats.id')
 			->order_by('lft')
 			->get('cats')
