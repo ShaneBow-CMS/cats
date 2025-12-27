@@ -13,6 +13,13 @@ table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
 .tree-tools > * {margin-left: 3px}
 
 .tab-pane { padding:8px }
+
+#cat-hero {position:relative}
+#cat-hero img {width:100%;cursor:pointer}
+#cat-hero img[mid='0'] {height:50px}
+
+#cat-title {position:absolute; right:12px; bottom:0; color:#fff}
+.page-summary .title {font-size:11px}
 </style>
 
 <div class="row">
@@ -49,14 +56,19 @@ table.tbl-hor-min-a {width:100%;margin:0;margin-bottom:1em}
   </div>
  </div>
 
- <div class="col-sm-7 col-lg-8">
-  <h3 id="cat-title" class="mt-0">Pages</h3>
+ <div class="col-sm-7 col-lg-8 xcat-preview">
+  <div id="cat-hero" class="mb-10 xform-group">
+   <img mid="0" src="/uploads/0.jpg" />
+   <h3 id="cat-title">Pages</h3>
+  </div>
   <div id="cat-pages"></div>
   <button class="btn preview btn-primary btn-outline btn-block" alt="Preview"><i class="icon-eye4"></i></button>
  </div>
 
 </div>
 
+~~cms/media/ci/views/dlg-media-picker.div
+<script type="text/javascript" src="/assets/js/cms.js"></script>
 <script>
 $(() => {
 	const PUBLISHED = 128;
@@ -64,6 +76,7 @@ $(() => {
 	// preview button (selected parent cat)
 	let _title = '';
 	let _slug = '';
+	let _id = 1;
 	$('button.preview').on('click', function(e){
 		e.preventDefault();
 		if (!_slug) return UBOW.flashError('Slug is blank!');
@@ -119,7 +132,7 @@ $(() => {
 				['id_page', 'input'],
 				['title', 'input'],
 				['slug', 'input'],
-				['layout', 'input'],
+				['mid', 'input'],
 				['lead', 'input'],
 				['icon', 'input'],
 			],
@@ -134,14 +147,33 @@ $(() => {
 			populateCatSelect($dlgMovePage.form, nodes);
 			},
 		onSelect: (n) => {
+			_id = n.id;
 			_title = n.title;
 			_slug = n.slug;
 			$('#cat-title').text(n.title);
+			$('#cat-hero img').attr('src', UBOW.imgSrc(n.mid,n.mtype)).attr('mid', n.mid);
 			pagesInCat.getId(n.id);
 			},
 		});
 	ed.populate(<?= json_encode($nodes) ?>);
 	populateCatSelect($dlgMovePage.form, ed.nodes);
+
+	// cat tron image
+	/////////////////////
+	const heroPicker = new MediaPicker('#cat-hero', {
+		btn:'#cat-hero',
+		onChange: ($img) => {
+			let mid = $img.attr('mid');
+			UBOW.ajax('/cat/set-mid', {id:_id, mid:mid}, (e, d, m) => {
+				if (e) return UBOW.flashError(`Image update failed: ${m}`);
+				let cat = ed.nodes.find(n => n.id == _id);
+				cat.mid = mid;
+				cat.mtype = UBOW.mtype($img.attr('src'));
+				UBOW.flashSuccess(`Image updated`);
+				});
+			},
+		verbose:!1
+		});
 
 	// Page toolbar...
 	/////////////////////

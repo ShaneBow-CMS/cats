@@ -68,6 +68,22 @@ class Cat extends MY_Controller {
 		respond(0, "SUCCESS", $tree);
 		}
 
+	public function set_mid() {
+		$this->load->helper('ajax');
+		$usr = $this->session->userdata('usr');
+		if (!$this->_usr)
+			respond(EXIT_ERR_LOGIN, "Log in required", '/user/login');
+
+		try {
+			$id = $_POST['id'];
+			unset($_POST['id']);
+			if( !$id ) respond(EXIT_ERROR, "missing id", '');
+			$this->mcats->update_info($id, $_POST);
+			}
+		catch (Exception $e) {db_error($e->getMessage());}
+		respond(0, "SUCCESS", '');
+		}
+
 	public function fetch($id) {
 		$this->load->helper('ajax');
 		try {
